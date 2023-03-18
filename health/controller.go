@@ -19,3 +19,7 @@ func NewController() HealthController {
 func (*controller) Health(ctx *gin.Context) {
 	ctx.String(http.StatusOK, "ok")
 }
+
+func Route(r *gin.Engine, c HealthController) {
+	r.GET("/health", c.Health)
+}

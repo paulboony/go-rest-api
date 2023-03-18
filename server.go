@@ -14,13 +14,13 @@ var (
 )
 
 func main() {
-	server := gin.Default()
-	server.GET("/", healthController.Health)
-	server.GET("/tasks", taskController.FindAll)
-	server.GET("/tasks/:id", taskController.FindById)
-	server.POST("/tasks", taskController.Create)
-	server.PATCH("/tasks/:id", taskController.Update)
-	server.DELETE("/tasks/:id", taskController.Delete)
+	router := SetupRoutes()
+	router.Run(":8080")
+}
 
-	server.Run(":8080")
+func SetupRoutes() *gin.Engine {
+	router := gin.Default()
+	health.Route(router, healthController)
+	task.Route(router, taskController)
+	return router
 }

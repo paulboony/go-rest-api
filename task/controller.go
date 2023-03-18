@@ -62,27 +62,28 @@ func (c *controller) Create(ctx *gin.Context) {
 func (c *controller) Update(ctx *gin.Context) {
 	id := ctx.Param("id")
 
-	var task Task
+	var newTask Task
 
-	if err := ctx.BindJSON(&task); err != nil {
+	if err := ctx.BindJSON(&newTask); err != nil {
 		ctx.JSON(http.StatusInternalServerError, util.ErrorsPayload(err.Error()))
 		return
 	}
 
-	if _, err := c.service.FindById(id); err != nil {
+	currentTask, err := c.service.FindById(id)
+	if err != nil {
 		ctx.JSON(http.StatusNotFound, util.ErrorsPayload(err.Error()))
 		return
 	}
 
-	task.ID = id
-	v, err := c.service.Update(task)
+	currentTask.Title = newTask.Title
+	updatedTask, err := c.service.Update(*currentTask)
 
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, util.ErrorsPayload(err.Error()))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, util.ResourcePayload(v))
+	ctx.JSON(http.StatusOK, util.ResourcePayload(updatedTask))
 }
 
 func (c *controller) Delete(ctx *gin.Context) {
@@ -92,4 +93,12 @@ func (c *controller) Delete(ctx *gin.Context) {
 	}
 	c.service.Delete(id)
 	ctx.JSON(http.StatusNoContent, nil)
+}
+
+func Route(r *gin.Engine, c TaskController) {
+	r.GET("/tasks", c.FindAll)
+	r.GET("/tasks/:id", c.FindById)
+	r.POST("/tasks", c.Create)
+	r.PATCH("/tasks/:id", c.Update)
+	r.DELETE("/tasks/:id", c.Delete)
 }

@@ -2,18 +2,25 @@
 
 A simple REST API implementation built with [Go](https://go.dev/) and [Gin framework](https://gin-gonic.com/). It's built while I'm learning Go and its conventions.
 
+## Test
+
+```sh
+$ go test ./...
+```
+
 ## Running the server
 
 ```sh
 $ go run server.go
 ```
 
-Visit http://localhost:8080
+Visit http://localhost:8080/health
 
 ## Implementation
 
 ### REST API
 
+- `GET /health`
 - `GET /tasks`
 - `GET /tasks/:id`
 - `POST /tasks`
